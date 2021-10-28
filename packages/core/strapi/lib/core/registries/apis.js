@@ -24,8 +24,8 @@ const apisRegistry = strapi => {
         const contentType = apiInstance.contentTypes[ctName];
 
         const { service, controller } = createCoreApi({
-          model: contentType,
           api: apiInstance,
+          contentType,
           strapi,
         });
 

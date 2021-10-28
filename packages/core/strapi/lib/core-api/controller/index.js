@@ -6,21 +6,29 @@ const { transformResponse } = require('./transform');
 const createSingleTypeController = require('./single-type');
 const createCollectionTypeController = require('./collection-type');
 
-module.exports = ({ service, model }) => {
-  const ctx = {
-    model,
-    service,
-    transformResponse(data, meta) {
-      return transformResponse(data, meta, { contentType: model });
-    },
-    sanitize(data) {
-      return sanitizeEntity(data, { model: strapi.getModel(model.uid) });
-    },
-  };
+module.exports = ctx => {
+  const { uid, strapi } = ctx;
 
-  if (contentTypes.isSingleType(model)) {
-    return createSingleTypeController(ctx);
+  const contentType = strapi.contentType(uid);
+
+  if (!contentType) {
+    throw new Error(`Cannot create core controller for unknown content type '${uid}'`);
   }
 
-  return createCollectionTypeController(ctx);
+  let coreController;
+
+  if (contentTypes.isSingleType(contentType)) {
+    coreController = createSingleTypeController(ctx);
+  }
+
+  coreController = createCollectionTypeController(ctx);
+
+  return Object.assign(coreController, {
+    transformResponse(data, meta) {
+      return transformResponse(data, meta, { contentType });
+    },
+    sanitize(data) {
+      return sanitizeEntity(data, { model: contentType });
+    },
+  });
 };

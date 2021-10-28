@@ -3,8 +3,8 @@
 /**
  * Returns a single type service to handle default core-api actions
  */
-const createSingleTypeService = ({ model, strapi, utils }) => {
-  const { uid } = model;
+const createSingleTypeService = ({ contentType, strapi, utils }) => {
+  const { uid } = contentType;
   const { sanitizeInput, getFetchParams } = utils;
 
   return {

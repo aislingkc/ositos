@@ -16,14 +16,14 @@ const createCollectionTypeService = require('./collection-type');
  * @param {{ model: object, strapi: object }} context
  * @returns {object}
  */
-const createService = ({ model, strapi }) => {
-  const utils = createUtils({ model });
+const createService = ({ contentType, strapi }) => {
+  const utils = createUtils({ contentType });
 
-  if (isSingleType(model)) {
-    return createSingleTypeService({ model, strapi, utils });
+  if (isSingleType(contentType)) {
+    return createSingleTypeService({ contentType, strapi, utils });
   }
 
-  return createCollectionTypeService({ model, strapi, utils });
+  return createCollectionTypeService({ contentType, strapi, utils });
 };
 
 /**
@@ -41,10 +41,10 @@ const getFetchParams = (params = {}) => {
 /**
  * Mixins
  */
-const createUtils = ({ model }) => {
+const createUtils = ({ contentType }) => {
   return {
     // make sure to keep the call to getNonWritableAttributes dynamic
-    sanitizeInput: data => _.omit(data, getNonWritableAttributes(model)),
+    sanitizeInput: data => _.omit(data, getNonWritableAttributes(contentType)),
     getFetchParams,
   };
 };

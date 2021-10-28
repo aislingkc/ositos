@@ -22,8 +22,8 @@ const setPublishedAt = data => {
  *
  * Returns a collection type service to handle default core-api actions
  */
-const createCollectionTypeService = ({ model, strapi, utils }) => {
-  const { uid } = model;
+const createCollectionTypeService = ({ contentType, strapi, utils }) => {
+  const { uid } = contentType;
 
   const { sanitizeInput, getFetchParams } = utils;
 
@@ -61,7 +61,7 @@ const createCollectionTypeService = ({ model, strapi, utils }) => {
       const { data } = params;
       const sanitizedData = sanitizeInput(data);
 
-      if (hasDraftAndPublish(model)) {
+      if (hasDraftAndPublish(contentType)) {
         setPublishedAt(sanitizedData);
       }
 

@@ -5,7 +5,7 @@ const { parseBody } = require('./transform');
 /**
  * Returns a single type controller to handle default core-api actions
  */
-const createSingleTypeController = ({ service, sanitize, transformResponse }) => {
+const createSingleTypeController = ({ uid, strapi }) => {
   return {
     /**
      * Retrieve single type content
@@ -14,8 +14,9 @@ const createSingleTypeController = ({ service, sanitize, transformResponse }) =>
      */
     async find(ctx) {
       const { query } = ctx;
-      const entity = await service.find(query);
-      return transformResponse(sanitize(entity));
+      const entity = await strapi.service(uid).find(query);
+
+      return this.transformResponse(this.sanitize(entity));
     },
 
     /**
@@ -27,16 +28,17 @@ const createSingleTypeController = ({ service, sanitize, transformResponse }) =>
       const { query } = ctx.request;
       const { data, files } = parseBody(ctx);
 
-      const entity = await service.createOrUpdate({ ...query, data, files });
+      const entity = await strapi.service(uid).createOrUpdate({ ...query, data, files });
 
-      return transformResponse(sanitize(entity));
+      return this.transformResponse(this.sanitize(entity));
     },
 
     async delete(ctx) {
       const { query } = ctx;
 
-      const entity = await service.delete(query);
-      return transformResponse(sanitize(entity));
+      const entity = await strapi.service(uid).delete(query);
+
+      return this.transformResponse(this.sanitize(entity));
     },
   };
 };

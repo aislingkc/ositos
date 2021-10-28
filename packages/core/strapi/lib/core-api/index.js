@@ -17,16 +17,16 @@ const { createService } = require('./service');
  * @param {object} opts.strapi strapi
  * @returns {object} controller & service
  */
-function createCoreApi({ api, model, strapi }) {
-  const { modelName } = model;
+function createCoreApi({ api, contentType, strapi }) {
+  const { uid, modelName } = contentType;
 
   // find corresponding service and controller
   const userService = _.get(api, ['services', modelName], {});
   const userController = _.get(api, ['controllers', modelName], {});
 
-  const service = Object.assign(createService({ model, strapi }), userService);
+  const service = Object.assign(createService({ contentType, strapi }), userService);
 
-  const controller = Object.assign(createController({ service, model }), userController);
+  const controller = Object.assign(createController({ uid, strapi }), userController);
 
   return {
     service,
